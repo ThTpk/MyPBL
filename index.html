@@ -3,500 +3,742 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบบันทึกการบ้าน</title>
+    <title>ระบบติดตามการบ้าน</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .form-section {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-        
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
-        
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
-        .btn {
+
+        body {
+            font-family: 'Kanit', 'Sarabun', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-            width: 100%;
+            min-height: 100vh;
+            padding: 20px;
         }
-        
+
+        .login-container {
+            max-width: 400px;
+            margin: 10% auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: #4f46e5;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .login-container p {
+            color: #6b7280;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: none;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .form-section {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .form-section h2 {
+            color: #4f46e5;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Kanit', 'Sarabun', sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .date-input {
+            position: relative;
+        }
+
+        .date-input input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: 'Kanit', 'Sarabun', sans-serif;
+            cursor: pointer;
+        }
+
+        .date-input input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Kanit', 'Sarabun', sans-serif;
+        }
+
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
         }
-        
-        .homework-list {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 10px;
-            border-left: 4px solid #28a745;
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            font-size: 0.9em;
+            padding: 8px 16px;
+            margin-left: 10px;
+            text-transform: none;
+            letter-spacing: 0;
         }
-        
-        .homework-item {
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            font-size: 0.9em;
+            padding: 8px 16px;
+            margin-left: 10px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .homework-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .homework-section {
             background: white;
+            border-radius: 15px;
             padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #007bff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
-        
+
+        .homework-section h3 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .homework-item {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4f46e5;
+            transition: all 0.3s ease;
+        }
+
         .homework-item:hover {
             transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        
+
         .homework-item.urgent {
-            border-left-color: #dc3545;
-            background: #fff5f5;
+            border-left-color: #ef4444;
+            background: #fef2f2;
         }
-        
-        .homework-item.due-soon {
-            border-left-color: #ffc107;
-            background: #fffbf0;
+
+        .homework-item.not-hurried {
+            border-left-color: #10b981;
+            background: #f0fdf4;
         }
-        
+
         .homework-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 10px;
         }
-        
-        .subject {
-            font-weight: 700;
-            color: #333;
+
+        .homework-title {
+            font-weight: 600;
+            color: #1f2937;
             font-size: 1.1em;
         }
-        
-        .due-date {
-            font-weight: 600;
-            padding: 5px 15px;
-            border-radius: 20px;
-            background: #e9ecef;
-            color: #495057;
+
+        .homework-dates {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 8px;
             font-size: 0.9em;
         }
-        
-        .due-date.urgent {
-            background: #dc3545;
-            color: white;
-        }
-        
-        .due-date.due-soon {
-            background: #ffc107;
-            color: #212529;
-        }
-        
-        .homework-details {
-            color: #666;
-            line-height: 1.6;
-            margin-top: 10px;
-        }
-        
-        .homework-note {
-            color: #495057;
-            line-height: 1.6;
-            margin-top: 8px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            border-left: 3px solid #17a2b8;
-            font-size: 0.95em;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .edit-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
-        
-        .edit-btn:hover {
-            background: #218838;
-        }
-        
-        .delete-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
-        
-        .delete-btn:hover {
-            background: #c82333;
-        }
-        
-        .no-homework {
-            text-align: center;
-            color: #666;
-            font-style: italic;
-            padding: 40px;
-        }
-        
+
         .date-info {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
-        }
-        
-        .stats {
             display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 5px;
+            color: #6b7280;
         }
-        
-        .stat-item {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            margin: 5px;
-            flex: 1;
-            min-width: 120px;
+
+        .homework-description {
+            color: #4b5563;
+            margin-bottom: 8px;
+            line-height: 1.5;
         }
-        
-        .stat-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #667eea;
-        }
-        
-        .stat-label {
-            color: #666;
+
+        .homework-note {
+            color: #7c3aed;
+            font-style: italic;
             font-size: 0.9em;
+            background: #f3f4f6;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .icon {
+            font-size: 1.2em;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #9ca3af;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .google-signin {
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .homework-sections {
+                grid-template-columns: 1fr;
+            }
+
+            .user-info {
+                position: static;
+                justify-content: center;
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📚 ระบบบันทึกการบ้าน</h1>
-        
-        <div class="form-section">
-            <h2 id="formTitle">เพิ่มการบ้านใหม่</h2>
-            <form id="homeworkForm">
-                <input type="hidden" id="editId" value="">
-                <div class="form-group">
-                    <label for="assignDate">วันที่รับการบ้าน:</label>
-                    <input type="date" id="assignDate" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="dueDate">วันที่ส่งการบ้าน:</label>
-                    <input type="date" id="dueDate" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="subject">วิชา:</label>
-                    <input type="text" id="subject" placeholder="เช่น คณิตศาสตร์, ภาษาไทย, วิทยาศาสตร์" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="details">รายละเอียดการบ้าน:</label>
-                    <textarea id="details" placeholder="อธิบายรายละเอียดการบ้าน..." required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="note">บันทึกเพิ่มเติม:</label>
-                    <textarea id="note" placeholder="เช่น ความคิดเห็น, สถานะการทำงาน, หรือหมายเหตุอื่นๆ"></textarea>
-                </div>
-                
-                <button type="submit" class="btn" id="submitBtn">เพิ่มการบ้าน</button>
-                <button type="button" class="btn" id="cancelBtn" style="display: none; background: #6c757d; margin-top: 10px;" onclick="cancelEdit()">ยกเลิก</button>
-            </form>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <h1>📚 ระบบติดตามการบ้าน</h1>
+        <p>กรุณาเข้าสู่ระบบด้วยบัญชี Google เพื่อเริ่มใช้งาน</p>
+        <div class="google-signin">
+            <div id="g_id_onload"
+                 data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left">
+            </div>
         </div>
-        
-        <div class="homework-list">
-            <h2>รายการการบ้าน</h2>
-            <div class="stats" id="stats">
-                <div class="stat-item">
-                    <div class="stat-number" id="totalCount">0</div>
-                    <div class="stat-label">งานทั้งหมด</div>
+        <p style="font-size: 0.9em; color: #9ca3af; margin-top: 20px;">
+            หรือคลิกปุ่มด้านล่างเพื่อใช้งานแบบตัวอย่าง
+        </p>
+        <button class="btn" onclick="loginDemo()" style="margin-top: 15px;">
+            เข้าใช้งานแบบตัวอย่าง
+        </button>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="container">
+        <div class="header">
+            <h1>📚 ระบบติดตามการบ้าน</h1>
+            <p>จัดการการบ้านของคุณอย่างเป็นระบบ ไม่พลาดกำหนดส่ง!</p>
+            <div class="user-info">
+                <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
+                <span id="userName"></span>
+                <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="form-section">
+                <h2>➕ เพิ่มการบ้านใหม่</h2>
+                <form id="homeworkForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="assignedDate">📅 วันที่ได้รับมอบหมาย</label>
+                            <div class="date-input">
+                                <input type="date" id="assignedDate" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="dueDate">⏰ วันที่กำหนดส่ง</label>
+                            <div class="date-input">
+                                <input type="date" id="dueDate" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">📖 วิชา</label>
+                            <input type="text" id="subject" placeholder="ระบุชื่อวิชา เช่น คณิตศาสตร์, ภาษาไทย" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">📝 รายละเอียดการบ้าน</label>
+                        <textarea id="description" placeholder="อธิบายรายละเอียดการบ้านที่ได้รับมอบหมาย..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="note">💡 หมายเหตุ (ไม่บังคับ)</label>
+                        <textarea id="note" placeholder="บันทึกเพิ่มเติม..."></textarea>
+                    </div>
+                    <button type="submit" class="btn">เพิ่มการบ้าน</button>
+                </form>
+            </div>
+
+            <div class="homework-sections">
+                <div class="homework-section">
+                    <h3><span class="icon">📋</span> การบ้านทั้งหมด</h3>
+                    <div id="allHomework"></div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="urgentCount">0</div>
-                    <div class="stat-label">เร่งด่วน</div>
+
+                <div class="homework-section">
+                    <h3><span class="icon">⚠️</span> ใกล้กำหนดส่ง (3 วัน)</h3>
+                    <div id="urgentHomework"></div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="dueSoonCount">0</div>
-                    <div class="stat-label">ใกล้หมดเขต</div>
+
+                <div class="homework-section">
+                    <h3><span class="icon">😌</span> ยังไม่เร่งด่วน</h3>
+                    <div id="notHurriedHomework"></div>
                 </div>
             </div>
-            <div id="homeworkList"></div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>✏️ แก้ไขการบ้าน</h2>
+            <form id="editForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="editAssignedDate">📅 วันที่ได้รับมอบหมาย</label>
+                        <div class="date-input">
+                            <input type="date" id="editAssignedDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDueDate">⏰ วันที่กำหนดส่ง</label>
+                        <div class="date-input">
+                            <input type="date" id="editDueDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSubject">📖 วิชา</label>
+                        <input type="text" id="editSubject" placeholder="ระบุชื่อวิชา" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editDescription">📝 รายละเอียดการบ้าน</label>
+                    <textarea id="editDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editNote">💡 หมายเหตุ (ไม่บังคับ)</label>
+                    <textarea id="editNote"></textarea>
+                </div>
+                <button type="submit" class="btn">อัปเดตการบ้าน</button>
+            </form>
         </div>
     </div>
 
     <script>
         let homeworkList = [];
-        
-        // โหลดข้อมูลจาก memory เมื่อเริ่มต้น
-        function loadHomework() {
-            const saved = localStorage.getItem('homeworkList');
-            if (saved) {
-                homeworkList = JSON.parse(saved);
-                displayHomework();
-            }
+        let editingId = null;
+        let currentUser = null;
+
+        // Google Sign-In callback
+        function handleCredentialResponse(response) {
+            const responsePayload = decodeJwtResponse(response.credential);
+            
+            currentUser = {
+                name: responsePayload.name,
+                email: responsePayload.email,
+                picture: responsePayload.picture
+            };
+            
+            showMainApp();
         }
-        
-        // บันทึกข้อมูลลง memory
-        function saveHomework() {
-            localStorage.setItem('homeworkList', JSON.stringify(homeworkList));
+
+        // Demo login function
+        function loginDemo() {
+            currentUser = {
+                name: "ผู้ใช้ตัวอย่าง",
+                email: "demo@example.com",
+                picture: "https://via.placeholder.com/40x40/4f46e5/ffffff?text=👤"
+            };
+            
+            showMainApp();
         }
-        
-        // ฟังก์ชันเพิ่มการบ้านใหม่
+
+        // Show main application
+        function showMainApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            
+            // Update user info
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userAvatar').src = currentUser.picture;
+            
+            // Initialize with today's date
+            document.getElementById('assignedDate').valueAsDate = new Date();
+            
+            renderHomework();
+        }
+
+        // Logout function
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('mainApp').style.display = 'none';
+            homeworkList = [];
+        }
+
+        // Decode JWT response
+        function decodeJwtResponse(token) {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+
+        // Form submission
         document.getElementById('homeworkForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const editId = document.getElementById('editId').value;
-            const assignDate = document.getElementById('assignDate').value;
-            const dueDate = document.getElementById('dueDate').value;
-            const subject = document.getElementById('subject').value;
-            const details = document.getElementById('details').value;
-            const note = document.getElementById('note').value;
-            
-            if (editId) {
-                // แก้ไขข้อมูลเดิม
-                const index = homeworkList.findIndex(hw => hw.id == editId);
-                if (index !== -1) {
-                    homeworkList[index] = {
-                        id: parseInt(editId),
-                        assignDate: assignDate,
-                        dueDate: dueDate,
-                        subject: subject,
-                        details: details,
-                        note: note
-                    };
-                }
-                cancelEdit();
-            } else {
-                // เพิ่มข้อมูลใหม่
-                const homework = {
-                    id: Date.now(),
-                    assignDate: assignDate,
-                    dueDate: dueDate,
-                    subject: subject,
-                    details: details,
-                    note: note
-                };
-                homeworkList.push(homework);
-            }
-            
-            saveHomework();
-            displayHomework();
-            
-            // ล้างฟอร์ม
-            document.getElementById('homeworkForm').reset();
+            const homework = {
+                id: Date.now(),
+                assignedDate: document.getElementById('assignedDate').value,
+                dueDate: document.getElementById('dueDate').value,
+                subject: document.getElementById('subject').value,
+                description: document.getElementById('description').value,
+                note: document.getElementById('note').value
+            };
+
+            homeworkList.push(homework);
+            renderHomework();
+            this.reset();
+            document.getElementById('assignedDate').valueAsDate = new Date();
         });
-        
-        // ฟังก์ชันแก้ไขการบ้าน
-        function editHomework(id) {
-            const homework = homeworkList.find(hw => hw.id === id);
+
+        // Edit form submission
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const homework = homeworkList.find(h => h.id === editingId);
             if (homework) {
-                document.getElementById('editId').value = homework.id;
-                document.getElementById('assignDate').value = homework.assignDate;
-                document.getElementById('dueDate').value = homework.dueDate;
-                document.getElementById('subject').value = homework.subject;
-                document.getElementById('details').value = homework.details;
-                document.getElementById('note').value = homework.note || '';
+                homework.assignedDate = document.getElementById('editAssignedDate').value;
+                homework.dueDate = document.getElementById('editDueDate').value;
+                homework.subject = document.getElementById('editSubject').value;
+                homework.description = document.getElementById('editDescription').value;
+                homework.note = document.getElementById('editNote').value;
                 
-                // เปลี่ยนหัวข้อและปุ่ม
-                document.getElementById('formTitle').textContent = 'แก้ไขการบ้าน';
-                document.getElementById('submitBtn').textContent = 'บันทึกการแก้ไข';
-                document.getElementById('cancelBtn').style.display = 'block';
-                
-                // เลื่อนไปที่ฟอร์ม
-                document.getElementById('homeworkForm').scrollIntoView({ behavior: 'smooth' });
+                renderHomework();
+                closeModal();
+            }
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('editModal');
+        const closeBtn = document.querySelector('.close');
+
+        closeBtn.addEventListener('click', closeModal);
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        function openModal(id) {
+            const homework = homeworkList.find(h => h.id === id);
+            if (homework) {
+                editingId = id;
+                document.getElementById('editAssignedDate').value = homework.assignedDate;
+                document.getElementById('editDueDate').value = homework.dueDate;
+                document.getElementById('editSubject').value = homework.subject;
+                document.getElementById('editDescription').value = homework.description;
+                document.getElementById('editNote').value = homework.note;
+                modal.style.display = 'block';
             }
         }
-        
-        // ฟังก์ชันยกเลิกการแก้ไข
-        function cancelEdit() {
-            document.getElementById('editId').value = '';
-            document.getElementById('formTitle').textContent = 'เพิ่มการบ้านใหม่';
-            document.getElementById('submitBtn').textContent = 'เพิ่มการบ้าน';
-            document.getElementById('cancelBtn').style.display = 'none';
-            document.getElementById('homeworkForm').reset();
+
+        function closeModal() {
+            modal.style.display = 'none';
+            editingId = null;
         }
-        
-        // ฟังก์ชันแสดงรายการการบ้าน
-        function displayHomework() {
-            const container = document.getElementById('homeworkList');
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            // กรองเฉพาะการบ้านที่ยังไม่หมดเขต
-            const activeHomework = homeworkList.filter(hw => {
-                const dueDate = new Date(hw.dueDate);
-                return dueDate >= today;
-            });
-            
-            // เรียงตามวันที่ส่ง
-            activeHomework.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-            
-            if (activeHomework.length === 0) {
-                container.innerHTML = '<div class="no-homework">🎉 ไม่มีการบ้านที่รอส่ง</div>';
-                updateStats(0, 0, 0);
-                return;
-            }
-            
-            let html = '';
-            let urgentCount = 0;
-            let dueSoonCount = 0;
-            
-            activeHomework.forEach(homework => {
-                const dueDate = new Date(homework.dueDate);
-                const assignDate = new Date(homework.assignDate);
-                const diffTime = dueDate.getTime() - today.getTime();
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                let urgencyClass = '';
-                let urgencyText = '';
-                
-                if (diffDays === 0) {
-                    urgencyClass = 'urgent';
-                    urgencyText = 'วันนี้!';
-                    urgentCount++;
-                } else if (diffDays === 1) {
-                    urgencyClass = 'urgent';
-                    urgencyText = 'พรุ่งนี้!';
-                    urgentCount++;
-                } else if (diffDays <= 3) {
-                    urgencyClass = 'due-soon';
-                    urgencyText = `อีก ${diffDays} วัน`;
-                    dueSoonCount++;
-                } else {
-                    urgencyText = `อีก ${diffDays} วัน`;
-                }
-                
-                html += `
-                    <div class="homework-item ${urgencyClass}">
-                        <div class="homework-header">
-                            <span class="subject">${homework.subject}</span>
-                            <span class="due-date ${urgencyClass}">${urgencyText}</span>
-                        </div>
-                        <div class="homework-details">${homework.details}</div>
-                        ${homework.note ? `<div class="homework-note">📝 <strong>บันทึก:</strong> ${homework.note}</div>` : ''}
-                        <div class="date-info">
-                            รับวันที่: ${formatDate(homework.assignDate)} | ส่งวันที่: ${formatDate(homework.dueDate)}
-                        </div>
-                        <div class="action-buttons">
-                            <button class="edit-btn" onclick="editHomework(${homework.id})">แก้ไข</button>
-                            <button class="delete-btn" onclick="deleteHomework(${homework.id})">ลบ</button>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-            updateStats(activeHomework.length, urgentCount, dueSoonCount);
-        }
-        
-        // ฟังก์ชันลบการบ้าน
+
         function deleteHomework(id) {
-            homeworkList = homeworkList.filter(hw => hw.id !== id);
-            saveHomework();
-            displayHomework();
+            if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบการบ้านนี้?')) {
+                homeworkList = homeworkList.filter(h => h.id !== id);
+                renderHomework();
+            }
         }
-        
-        // ฟังก์ชันแปลงวันที่เป็นภาษาไทย
+
         function formatDate(dateString) {
             const date = new Date(dateString);
-            return date.toLocaleDateString('th-TH', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+            const thaiMonths = [
+                'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+                'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+            ];
+            const thaiDays = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+            
+            const day = thaiDays[date.getDay()];
+            const dateNum = date.getDate();
+            const month = thaiMonths[date.getMonth()];
+            const year = date.getFullYear() + 543; // Convert to Buddhist Era
+            
+            return `${day} ${dateNum} ${month} ${year}`;
+        }
+
+        function getDaysUntilDue(dueDate) {
+            const today = new Date();
+            const due = new Date(dueDate);
+            const timeDiff = due.getTime() - today.getTime();
+            return Math.ceil(timeDiff / (1000 * 3600 * 24));
+        }
+
+        function createHomeworkItem(homework) {
+            const daysUntilDue = getDaysUntilDue(homework.dueDate);
+            let itemClass = 'homework-item';
+            
+            if (daysUntilDue <= 3 && daysUntilDue >= 0) {
+                itemClass += ' urgent';
+            } else if (daysUntilDue > 3) {
+                itemClass += ' not-hurried';
+            }
+
+            return `
+                <div class="${itemClass}">
+                    <div class="homework-header">
+                        <div class="homework-title">${homework.subject}</div>
+                        <div class="actions">
+                            <button class="btn btn-secondary" onclick="openModal(${homework.id})">แก้ไข</button>
+                            <button class="btn btn-danger" onclick="deleteHomework(${homework.id})">ลบ</button>
+                        </div>
+                    </div>
+                    <div class="homework-dates">
+                        <div class="date-info">
+                            <span>📅 มอบหมาย:</span> ${formatDate(homework.assignedDate)}
+                        </div>
+                        <div class="date-info">
+                            <span>⏰ กำหนดส่ง:</span> ${formatDate(homework.dueDate)}
+                        </div>
+                    </div>
+                    <div class="homework-description">${homework.description}</div>
+                    ${homework.note ? `<div class="homework-note">💡 ${homework.note}</div>` : ''}
+                </div>
+            `;
+        }
+
+        function renderHomework() {
+            const today = new Date();
+            
+            // Sort by due date
+            const sortedHomework = [...homeworkList].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+            
+            // All homework
+            const allHomeworkDiv = document.getElementById('allHomework');
+            if (sortedHomework.length === 0) {
+                allHomeworkDiv.innerHTML = '<div class="empty-state">ยังไม่มีการบ้าน เพิ่มการบ้านใหม่ได้ที่ด้านบน!</div>';
+            } else {
+                allHomeworkDiv.innerHTML = sortedHomework.map(createHomeworkItem).join('');
+            }
+
+            // Urgent homework (due within 3 days)
+            const urgentHomework = sortedHomework.filter(h => {
+                const daysUntilDue = getDaysUntilDue(h.dueDate);
+                return daysUntilDue <= 3 && daysUntilDue >= 0;
             });
+            
+            const urgentHomeworkDiv = document.getElementById('urgentHomework');
+            if (urgentHomework.length === 0) {
+                urgentHomeworkDiv.innerHTML = '<div class="empty-state">ไม่มีการบ้านที่เร่งด่วน! 🎉</div>';
+            } else {
+                urgentHomeworkDiv.innerHTML = urgentHomework.map(createHomeworkItem).join('');
+            }
+
+            // Not hurried homework (due in more than 3 days)
+            const notHurriedHomework = sortedHomework.filter(h => {
+                const daysUntilDue = getDaysUntilDue(h.dueDate);
+                return daysUntilDue > 3;
+            });
+            
+            const notHurriedHomeworkDiv = document.getElementById('notHurriedHomework');
+            if (notHurriedHomework.length === 0) {
+                notHurriedHomeworkDiv.innerHTML = '<div class="empty-state">ไม่มีการบ้านที่ยังไม่เร่งด่วน</div>';
+            } else {
+                notHurriedHomeworkDiv.innerHTML = notHurriedHomework.map(createHomeworkItem).join('');
+            }
         }
-        
-        // ฟังก์ชันอัพเดตสถิติ
-        function updateStats(total, urgent, dueSoon) {
-            document.getElementById('totalCount').textContent = total;
-            document.getElementById('urgentCount').textContent = urgent;
-            document.getElementById('dueSoonCount').textContent = dueSoon;
-        }
-        
-        // ตั้งค่าวันที่เริ่มต้น
-        document.getElementById('assignDate').value = new Date().toISOString().split('T')[0];
-        
-        // โหลดข้อมูลเมื่อเริ่มต้น
-        loadHomework();
+
+        // Initialize Google Sign-In when page loads
+        window.onload = function() {
+            // Note: In a real implementation, you would need to replace YOUR_GOOGLE_CLIENT_ID 
+            // with your actual Google OAuth client ID
+            console.log('Google Sign-In initialized');
+        };
     </script>
 </body>
 </html>
