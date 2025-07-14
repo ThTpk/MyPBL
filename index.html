@@ -409,8 +409,22 @@
         let homeworkList = [];
         let editingId = null;
 
+        // Load data from localStorage
+        function loadData() {
+            const savedHomework = localStorage.getItem('homeworkList');
+            if (savedHomework) {
+                homeworkList = JSON.parse(savedHomework);
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('homeworkList', JSON.stringify(homeworkList));
+        }
+
         // Initialize with today's date when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            loadData(); // โหลดข้อมูลที่บันทึกไว้
             document.getElementById('assignedDate').valueAsDate = new Date();
             renderHomework();
         });
@@ -429,6 +443,7 @@
             };
 
             homeworkList.push(homework);
+            saveData(); // บันทึกข้อมูลลง localStorage
             renderHomework();
             this.reset();
             document.getElementById('assignedDate').valueAsDate = new Date();
@@ -446,6 +461,7 @@
                 homework.description = document.getElementById('editDescription').value;
                 homework.note = document.getElementById('editNote').value;
                 
+                saveData(); // บันทึกข้อมูลลง localStorage
                 renderHomework();
                 closeModal();
             }
@@ -483,6 +499,7 @@
         function deleteHomework(id) {
             if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบการบ้านนี้?')) {
                 homeworkList = homeworkList.filter(h => h.id !== id);
+                saveData(); // บันทึกข้อมูลลง localStorage
                 renderHomework();
             }
         }
