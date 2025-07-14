@@ -195,6 +195,13 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
+        .homework-item.overdue {
+            border-left-color: #dc2626;
+            background: #fef2f2;
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+            border: 2px solid #fca5a5;
+        }
+
         .homework-item.urgent {
             border-left-color: #ef4444;
             background: #fef2f2;
@@ -350,6 +357,11 @@
             </div>
 
             <div class="homework-sections">
+                <div class="homework-section">
+                    <h3><span class="icon">🚨</span> เลยกำหนดส่งแล้ว</h3>
+                    <div id="overdueHomework"></div>
+                </div>
+
                 <div class="homework-section">
                     <h3><span class="icon">📋</span> การบ้านทั้งหมด</h3>
                     <div id="allHomework"></div>
@@ -530,11 +542,22 @@
         function createHomeworkItem(homework) {
             const daysUntilDue = getDaysUntilDue(homework.dueDate);
             let itemClass = 'homework-item';
+            let statusText = '';
             
-            if (daysUntilDue <= 3 && daysUntilDue >= 0) {
+            if (daysUntilDue < 0) {
+                itemClass += ' overdue';
+                const overdueDays = Math.abs(daysUntilDue);
+                statusText = `<div style="color: #dc2626; font-weight: bold; margin-bottom: 8px;">🚨 เลยกำหนดส่งแล้ว ${overdueDays} วัน!</div>`;
+            } else if (daysUntilDue <= 3 && daysUntilDue >= 0) {
                 itemClass += ' urgent';
+                if (daysUntilDue === 0) {
+                    statusText = `<div style="color: #dc2626; font-weight: bold; margin-bottom: 8px;">⚠️ กำหนดส่งวันนี้!</div>`;
+                } else {
+                    statusText = `<div style="color: #ea580c; font-weight: bold; margin-bottom: 8px;">⚠️ เหลือเวลาอีก ${daysUntilDue} วัน</div>`;
+                }
             } else if (daysUntilDue > 3) {
                 itemClass += ' not-hurried';
+                statusText = `<div style="color: #059669; font-weight: bold; margin-bottom: 8px;">😌 เหลือเวลาอีก ${daysUntilDue} วัน</div>`;
             }
 
             return `
@@ -546,6 +569,7 @@
                             <button class="btn btn-danger" onclick="deleteHomework(${homework.id})">ลบ</button>
                         </div>
                     </div>
+                    ${statusText}
                     <div class="homework-dates">
                         <div class="date-info">
                             <span>📅 มอบหมาย:</span> ${formatDate(homework.assignedDate)}
@@ -565,6 +589,19 @@
             
             // Sort by due date
             const sortedHomework = [...homeworkList].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+            
+            // Overdue homework (past due date)
+            const overdueHomework = sortedHomework.filter(h => {
+                const daysUntilDue = getDaysUntilDue(h.dueDate);
+                return daysUntilDue < 0;
+            });
+            
+            const overdueHomeworkDiv = document.getElementById('overdueHomework');
+            if (overdueHomework.length === 0) {
+                overdueHomeworkDiv.innerHTML = '<div class="empty-state">ไม่มีการบ้านที่เลยกำหนดส่ง! ✅</div>';
+            } else {
+                overdueHomeworkDiv.innerHTML = overdueHomework.map(createHomeworkItem).join('');
+            }
             
             // All homework
             const allHomeworkDiv = document.getElementById('allHomework');
