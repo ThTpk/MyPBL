@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบติดตามการบ้าน</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>ตัวอย่างระบบติดตามการบ้าน</title>
     <style>
         * {
             margin: 0;
@@ -19,28 +18,6 @@
             padding: 20px;
         }
 
-        .login-container {
-            max-width: 400px;
-            margin: 10% auto;
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .login-container h1 {
-            color: #4f46e5;
-            margin-bottom: 30px;
-            font-size: 2em;
-        }
-
-        .login-container p {
-            color: #6b7280;
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -48,7 +25,6 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
-            display: none;
         }
 
         .header {
@@ -63,36 +39,6 @@
             font-size: 2.5em;
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .user-info {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
         }
 
         .main-content {
@@ -351,10 +297,6 @@
             color: #000;
         }
 
-        .google-signin {
-            margin: 20px 0;
-        }
-
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -363,53 +305,14 @@
             .homework-sections {
                 grid-template-columns: 1fr;
             }
-
-            .user-info {
-                position: static;
-                justify-content: center;
-                margin-top: 20px;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div id="loginScreen" class="login-container">
-        <h1>📚 ระบบติดตามการบ้าน</h1>
-        <p>กรุณาเข้าสู่ระบบด้วยบัญชี Google เพื่อเริ่มใช้งาน</p>
-        <div class="google-signin">
-            <div id="g_id_onload"
-                 data-client_id="YOUR_GOOGLE_CLIENT_ID"
-                 data-callback="handleCredentialResponse"
-                 data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin"
-                 data-type="standard"
-                 data-size="large"
-                 data-theme="outline"
-                 data-text="sign_in_with"
-                 data-shape="rectangular"
-                 data-logo_alignment="left">
-            </div>
-        </div>
-        <p style="font-size: 0.9em; color: #9ca3af; margin-top: 20px;">
-            หรือคลิกปุ่มด้านล่างเพื่อใช้งานแบบตัวอย่าง
-        </p>
-        <button class="btn" onclick="loginDemo()" style="margin-top: 15px;">
-            เข้าใช้งานแบบตัวอย่าง
-        </button>
-    </div>
-
-    <!-- Main Application -->
-    <div id="mainApp" class="container">
+    <div class="container">
         <div class="header">
-            <h1>📚 ระบบติดตามการบ้าน</h1>
+            <h1>📚 ตัวอย่างระบบติดตามการบ้าน</h1>
             <p>จัดการการบ้านของคุณอย่างเป็นระบบ ไม่พลาดกำหนดส่ง!</p>
-            <div class="user-info">
-                <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
-                <span id="userName"></span>
-                <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
-            </div>
         </div>
 
         <div class="main-content">
@@ -505,64 +408,12 @@
     <script>
         let homeworkList = [];
         let editingId = null;
-        let currentUser = null;
 
-        // Google Sign-In callback
-        function handleCredentialResponse(response) {
-            const responsePayload = decodeJwtResponse(response.credential);
-            
-            currentUser = {
-                name: responsePayload.name,
-                email: responsePayload.email,
-                picture: responsePayload.picture
-            };
-            
-            showMainApp();
-        }
-
-        // Demo login function
-        function loginDemo() {
-            currentUser = {
-                name: "ผู้ใช้ตัวอย่าง",
-                email: "demo@example.com",
-                picture: "https://via.placeholder.com/40x40/4f46e5/ffffff?text=👤"
-            };
-            
-            showMainApp();
-        }
-
-        // Show main application
-        function showMainApp() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            
-            // Update user info
-            document.getElementById('userName').textContent = currentUser.name;
-            document.getElementById('userAvatar').src = currentUser.picture;
-            
-            // Initialize with today's date
+        // Initialize with today's date when page loads
+        document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('assignedDate').valueAsDate = new Date();
-            
             renderHomework();
-        }
-
-        // Logout function
-        function logout() {
-            currentUser = null;
-            document.getElementById('loginScreen').style.display = 'block';
-            document.getElementById('mainApp').style.display = 'none';
-            homeworkList = [];
-        }
-
-        // Decode JWT response
-        function decodeJwtResponse(token) {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        }
+        });
 
         // Form submission
         document.getElementById('homeworkForm').addEventListener('submit', function(e) {
@@ -732,13 +583,6 @@
                 notHurriedHomeworkDiv.innerHTML = notHurriedHomework.map(createHomeworkItem).join('');
             }
         }
-
-        // Initialize Google Sign-In when page loads
-        window.onload = function() {
-            // Note: In a real implementation, you would need to replace YOUR_GOOGLE_CLIENT_ID 
-            // with your actual Google OAuth client ID
-            console.log('Google Sign-In initialized');
-        };
     </script>
 </body>
 </html>
